@@ -24,12 +24,6 @@ jobs:
       run: npm install -g npm@latest
     - name: Install dependencies and build
       run: npm ci
-      working-directory: ./server
-      env:
-        CI: true
-      cache:
-        npm: true
-        cache-dependency-path: ./server/package-lock.json
     - name: Publish package
       run: npm publish --provenance
       env:
