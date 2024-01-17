@@ -21,26 +21,37 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
         WITH_V: true
 
-    - name: Create Release 
-      if: startsWith(github.ref, 'refs/tags/') 
-      uses: actions/create-release@v1 
-      id: create_release 
-      with: 
-        draft: false 
-        prerelease: false 
-        release_name: ${{ github.ref }} 
-        tag_name: ${{ github.ref }} 
-        body_path: CHANGELOG.md 
-      env: 
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  Release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Get Repo Name
+        id: get_repo_name
+        run: |
+          # Extract repo name from GITHUB_REPOSITORY variable
+          repo_fullname="${{ github.repository }}"
+          repo_name="${repo_fullname##*/}"
+          echo "REPO_NAME=${repo_name}" >> $GITHUB_ENV
 
-    - name: Upload Release 
-      if: startsWith(github.ref, 'refs/tags/') 
-      uses: actions/upload-release-asset@v1 
-      env: 
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-      with: 
-        upload_url: ${{ steps.create_release.outputs.upload_url }} 
-        asset_path: Oxide.Ext.Sanctuary/bin/Release/net48/Oxide.Ext.Sanctuary.dll 
-        asset_name: Oxide.Ext.Sanctuary.dll 
-        asset_content_type: application/octet-stream
+      - name: Get Tag Name
+        id: get_tag_name
+        run: |
+          # Extract tag or branch name from GITHUB_REF
+          tag_name="${{ github.ref }}"
+          tag_name="${tag_name#refs/tags/}"
+          echo "TAG_NAME=${tag_name}" >> $GITHUB_ENV
+
+      - name: Create Release
+        run: |
+          echo "Repository Name: $REPO_NAME"
+          echo "Tag Name: $TAG_NAME"
+          git archive --format zip --prefix="${REPO_NAME}/" --output "${REPO_NAME}-${TAG_NAME}.zip" HEAD
+          echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
+          echo "TAG_NAME=${TAG_NAME}" >> $GITHUB_ENV
+
+      - name: Upload Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "${{ env.REPO_NAME }}-${{ env.TAG_NAME }}.zip"
