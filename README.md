@@ -1,2 +1,2 @@
 # Test
-minor1
+minor12
