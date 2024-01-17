@@ -22,6 +22,8 @@ jobs:
         cache: npm
     - name: Install latest npm version
       run: npm install -g npm@latest
+    - name: Change working directory
+      run: cd /home/runner/work/Test/Test/server
     - name: Install dependencies and build
       run: npm ci
     - name: Publish package
