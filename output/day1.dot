@@ -1,0 +1,31 @@
+digraph RenPyFlow {
+    game_start [shape=box];
+    lap_or_taxi [shape=box, style=filled, color=blue];
+    game_start -> lap_or_taxi;
+    lap_or_taxi -> mama_lap [label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD><FONT COLOR="black">Yes</FONT></TD></TR><TR><TD><FONT COLOR="red">dylan_lap = True</FONT></TD></TR><TR><TD><FONT COLOR="black">dylan += 1</FONT></TD></TR></TABLE>>];
+    mama_lap [shape=box];
+    lap_or_taxi -> taxi [label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD><FONT COLOR="black">No</FONT></TD></TR><TR><TD><FONT COLOR="black">good_wife += 1</FONT></TD></TR><TR><TD><FONT COLOR="red">dylan_lap = False</FONT></TD></TR></TABLE>>];
+    taxi [shape=box];
+    mama_lap [shape=box];
+    embrace_hip_or_not [shape=box, style=filled, color=blue];
+    mama_lap -> embrace_hip_or_not;
+    embrace_hip_or_not -> embrace_hip [label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD><FONT COLOR="black">Hold on to son's hip</FONT></TD></TR><TR><TD><FONT COLOR="black">dylan += 1</FONT></TD></TR></TABLE>>];
+    embrace_hip [shape=box];
+    embrace_hip_or_not -> not_embrace_hip [label=<<TABLE BORDER="0" CELLBORDER="0" CELLSPACING="0"><TR><TD><FONT COLOR="black">Don’t hold on to son's hip[KoGa3ChoiceView1]</FONT></TD></TR></TABLE>>];
+    not_embrace_hip [shape=box];
+    embrace_hip [shape=box];
+    embrace_hip -> drive_continues;
+    drive_continues [shape=box];
+    not_embrace_hip [shape=box];
+    not_embrace_hip -> drive_continues;
+    drive_continues [shape=box];
+    drive_continues [shape=box];
+    drive_continues -> day1_in_house;
+    day1_in_house [shape=box];
+    taxi [shape=box];
+    taxi -> day1_in_house;
+    day1_in_house [shape=box];
+    day1_in_house [shape=box];
+    day1_in_house -> day2;
+    day2 [shape=box];
+}
