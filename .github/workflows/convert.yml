@@ -51,7 +51,7 @@ jobs:
           git push
       
       - name: Upload DOT and PNG files as artifacts
-        uses: actions/upload-artifacts@v3
+        uses: actions/upload-artifact@v3
         with:
           name: dot-and-png-files
           path: output/
