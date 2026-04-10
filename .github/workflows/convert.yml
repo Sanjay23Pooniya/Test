@@ -30,7 +30,7 @@ jobs:
           python tools/convert.py scripts/ output/
       
       - name: Install Graphviz
-        run: sudo apt-get installl graphviz -y
+        run: sudo apt-get install graphviz -y
 
       - name: Render DOT files to PNG
         run: |
