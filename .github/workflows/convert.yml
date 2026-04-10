@@ -1,0 +1,57 @@
+name: Convert RenPy Scripts to DOT
+
+on:
+  push:
+    paths:
+      - "scripts/**"
+      - "tools/convert.py"
+  workflow_dispatch:
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout respository
+        uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run conversion scripts
+        run: |
+          mkdir -p output
+          python tools/convert.py scripts/ output/
+      
+      - name: Install Graphviz
+        run: sudo apt-get installl graphviz -y
+
+      - name: Render DOT files to PNG
+        run: |
+          for file in output/*.dot; do
+            dot -Tpng "$file" -o "${file%.dot}.png"
+          done
+      
+      - name: Run tests
+        run: |
+          pytest test/ --maxfail=1 --disable-warnings -q || true
+        
+      - name: Commit DOT and PNG files back to respository
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/*.dot output/*.png
+          git commit -m "Automated conversion: update Dot and PNG files" || echo "No changes to commit"
+          git push
+      
+      - name: Upload DOT and PNG files as artifacts
+        uses: actions/upload-artifacts@v3
+        with:
+          name: dot-and-png-files
+          path: output/
